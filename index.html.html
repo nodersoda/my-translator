@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="my">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>နေ့စဉ်သုံး ဘာသာပြန်ကိရိယာ</title>
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2980b9;
+            --light-color: #ecf0f1;
+            --dark-color: #2c3e50;
+            --success-color: #27ae60;
+            --error-color: #e74c3c;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Pyidaungsu', 'Myanmar Text', sans-serif;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            color: var(--dark-color);
+            margin-bottom: 10px;
+        }
+        
+        .description {
+            color: #666;
+            margin-bottom: 20px;
+        }
+        
+        .layout-toggle {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        
+        .toggle-btn {
+            padding: 10px 20px;
+            background-color: var(--light-color);
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s;
+            border-radius: 5px;
+            margin: 0 5px;
+        }
+        
+        .toggle-btn.active {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .translator-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .mobile-layout .translator-container {
+            flex-direction: column;
+        }
+        
+        .desktop-layout .translator-container {
+            flex-direction: row;
+        }
+        
+        .translation-box {
+            flex: 1;
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .language-selector {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+        
+        .language-btn {
+            padding: 8px 15px;
+            background-color: var(--light-color);
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+        
+        .language-btn.active {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        textarea {
+            width: 100%;
+            height: 200px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            resize: none;
+            font-size: 16px;
+            line-height: 1.5;
+        }
+        
+        .action-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+        }
+        
+        .action-btn {
+            padding: 10px 15px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .action-btn:hover {
+            background-color: var(--secondary-color);
+        }
+        
+        .action-btn.copy {
+            background-color: var(--success-color);
+        }
+        
+        .action-btn.copy:hover {
+            background-color: #219653;
+        }
+        
+        .translate-btn {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 20px;
+            transition: all 0.3s;
+        }
+        
+        .translate-btn:hover {
+            background-color: var(--secondary-color);
+        }
+        
+        .translate-btn:disabled {
+            background-color: #95a5a6;
+            cursor: not-allowed;
+        }
+        
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .error-message {
+            color: var(--error-color);
+            margin-top: 10px;
+            text-align: center;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            padding: 20px;
+            color: #666;
+            font-size: 14px;
+        }
+        
+        @media (max-width: 768px) {
+            .desktop-layout .translator-container {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container mobile-layout">
+        <header>
+            <h1>နေ့စဉ်သုံး ဘာသာပြန်ကိရိယာ</h1>
+            <p class="description">မြန်မာ နှင့် အင်္ဂလိပ်ဘာသာစကားများ အပြန်အလှန် ပြန်ဆိုရန်</p>
+            
+            <div class="layout-toggle">
+                <button class="toggle-btn active" id="mobile-toggle">Mobile Layout</button>
+                <button class="toggle-btn" id="desktop-toggle">Desktop Layout</button>
+            </div>
+        </header>
+        
+        <div class="translator-container">
+            <div class="translation-box">
+                <div class="language-selector">
+                    <button class="language-btn active" id="from-my">မြန်မာ</button>
+                    <button class="language-btn" id="from-en">English</button>
+                </div>
+                <textarea id="input-text" placeholder="ဘာသာပြန်လိုသည့် စာသားကို ရိုက်ထည့်ပါ..."></textarea>
+                <div class="action-buttons">
+                    <button class="action-btn" id="paste-btn">Paste</button>
+                    <button class="action-btn copy" id="copy-input">Copy</button>
+                </div>
+            </div>
+            
+            <button class="translate-btn" id="translate-btn">
+                <span id="translate-text">ဘာသာပြန်မည်</span>
+                <span id="translate-loading" class="loading" style="display: none;"></span>
+            </button>
+            
+            <div class="translation-box">
+                <div class="language-selector">
+                    <button class="language-btn" id="to-my">မြန်မာ</button>
+                    <button class="language-btn active" id="to-en">English</button>
+                </div>
+                <textarea id="output-text" placeholder="ဘာသာပြန်ပြီးသော စာသား..." readonly></textarea>
+                <div class="action-buttons">
+                    <button class="action-btn" id="clear-btn">Clear</button>
+                    <button class="action-btn copy" id="copy-output">Copy</button>
+                </div>
+            </div>
+            <div id="error-message" class="error-message" style="display: none;"></div>
+        </div>
+        
+        <footer>
+            <p>ဖောက်သည်များနှင့် နေ့စဉ်ဆက်သွယ်ပြောဆိုရာတွင် အဆင်ပြေစေရန် ရည်ရွယ်ပါသည်</p>
+        </footer>
+    </div>
+
+    <script>
+        // Layout Toggle
+        const mobileToggle = document.getElementById('mobile-toggle');
+        const desktopToggle = document.getElementById('desktop-toggle');
+        const container = document.querySelector('.container');
+        
+        mobileToggle.addEventListener('click', function() {
+            container.classList.remove('desktop-layout');
+            container.classList.add('mobile-layout');
+            mobileToggle.classList.add('active');
+            desktopToggle.classList.remove('active');
+        });
+        
+        desktopToggle.addEventListener('click', function() {
+            container.classList.remove('mobile-layout');
+            container.classList.add('desktop-layout');
+            desktopToggle.classList.add('active');
+            mobileToggle.classList.remove('active');
+        });
+        
+        // Language Selection
+        const fromMyBtn = document.getElementById('from-my');
+        const fromEnBtn = document.getElementById('from-en');
+        const toMyBtn = document.getElementById('to-my');
+        const toEnBtn = document.getElementById('to-en');
+        
+        fromMyBtn.addEventListener('click', function() {
+            fromMyBtn.classList.add('active');
+            fromEnBtn.classList.remove('active');
+            toMyBtn.classList.remove('active');
+            toEnBtn.classList.add('active');
+        });
+        
+        fromEnBtn.addEventListener('click', function() {
+            fromEnBtn.classList.add('active');
+            fromMyBtn.classList.remove('active');
+            toMyBtn.classList.add('active');
+            toEnBtn.classList.remove('active');
+        });
+        
+        toMyBtn.addEventListener('click', function() {
+            toMyBtn.classList.add('active');
+            toEnBtn.classList.remove('active');
+            fromMyBtn.classList.remove('active');
+            fromEnBtn.classList.add('active');
+        });
+        
+        toEnBtn.addEventListener('click', function() {
+            toEnBtn.classList.add('active');
+            toMyBtn.classList.remove('active');
+            fromMyBtn.classList.add('active');
+            fromEnBtn.classList.remove('active');
+        });
+        
+        // Translation function using Google Translate API
+        const translateBtn = document.getElementById('translate-btn');
+        const translateText = document.getElementById('translate-text');
+        const translateLoading = document.getElementById('translate-loading');
+        const inputText = document.getElementById('input-text');
+        const outputText = document.getElementById('output-text');
+        const errorMessage = document.getElementById('error-message');
+        
+        // Function to translate text
+        async function translateTextAPI(text, sourceLang, targetLang) {
+            // Using a free translation API (MyMemory API)
+            const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=${sourceLang}|${targetLang}`;
+            
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                if (data.responseStatus === 200) {
+                    return data.responseData.translatedText;
+                } else {
+                    throw new Error(data.responseDetails || 'Translation failed');
+                }
+            } catch (error) {
+                console.error('Translation error:', error);
+                throw error;
+            }
+        }
+        
+        translateBtn.addEventListener('click', async function() {
+            const input = inputText.value.trim();
+            
+            if (!input) {
+                showError("ကျေးဇူးပြု၍ ဘာသာပြန်လိုသည့် စာသားကို ရိုက်ထည့်ပါ");
+                return;
+            }
+            
+            // Check which translation direction
+            const isMyanmarToEnglish = fromMyBtn.classList.contains('active');
+            const sourceLang = isMyanmarToEnglish ? 'my' : 'en';
+            const targetLang = isMyanmarToEnglish ? 'en' : 'my';
+            
+            // Show loading state
+            translateBtn.disabled = true;
+            translateText.style.display = 'none';
+            translateLoading.style.display = 'inline-block';
+            errorMessage.style.display = 'none';
+            
+            try {
+                const translatedText = await translateTextAPI(input, sourceLang, targetLang);
+                outputText.value = translatedText;
+            } catch (error) {
+                console.error('Translation error:', error);
+                showError("ဘာသာပြန်ဆိုရာတွင် အမှားတစ်ခုဖြစ်နေပါသည်။ ကျေးဇူးပြု၍ နောက်မှ ထပ်ကြိုးစားပါ");
+            } finally {
+                // Hide loading state
+                translateBtn.disabled = false;
+                translateText.style.display = 'inline-block';
+                translateLoading.style.display = 'none';
+            }
+        });
+        
+        function showError(message) {
+            errorMessage.textContent = message;
+            errorMessage.style.display = 'block';
+        }
+        
+        // Copy/Paste functionality
+        const pasteBtn = document.getElementById('paste-btn');
+        const copyInputBtn = document.getElementById('copy-input');
+        const copyOutputBtn = document.getElementById('copy-output');
+        const clearBtn = document.getElementById('clear-btn');
+        
+        pasteBtn.addEventListener('click', async function() {
+            try {
+                const text = await navigator.clipboard.readText();
+                inputText.value = text;
+            } catch (err) {
+                alert('Clipboard access failed. Please paste manually.');
+            }
+        });
+        
+        copyInputBtn.addEventListener('click', function() {
+            inputText.select();
+            document.execCommand('copy');
+            alert('Text copied to clipboard');
+        });
+        
+        copyOutputBtn.addEventListener('click', function() {
+            outputText.select();
+            document.execCommand('copy');
+            alert('Text copied to clipboard');
+        });
+        
+        clearBtn.addEventListener('click', function() {
+            inputText.value = '';
+            outputText.value = '';
+            errorMessage.style.display = 'none';
+        });
+    </script>
+</body>
+</html>
